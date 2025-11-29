@@ -2,6 +2,8 @@
 
 A complete, multi-purpose Discord bot built with **Discord.js v14**. This bot features a robust command handler, economy system, moderation tools, leveling, tickets, and more.
 
+**🌐 Website:** [universalgg.netlify.app](https://universalgg.netlify.app/)
+
 ## 🚀 Features
 
 - **Advanced Moderation**: Ban, kick, timeout, nuke, and lock channels.

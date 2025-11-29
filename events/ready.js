@@ -13,8 +13,8 @@ export default {
     client.user.setPresence({
       activities: [
         {
-          name: 'DM me to open ModMail 📩',
-          type: ActivityType.Listening,
+          name: 'universalgg.netlify.app 🌐',
+          type: ActivityType.Watching,
         }
       ],
       status: 'online',
