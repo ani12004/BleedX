@@ -1,6 +1,6 @@
 module.exports = {
     apps: [{
-        name: "universal-bot",
+        name: "discord-bot-universal",
         script: "./index.js",
         instances: 1,
         autorestart: true,

@@ -1,5 +1,5 @@
 {
-  "name": "discord-bot-complete",
+  "name": "discord-bot-universal",
   "version": "1.0.0",
   "description": "A complete Discord bot built with Discord.js v14",
   "main": "index.js",

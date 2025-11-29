@@ -1,4 +1,4 @@
-# Discord Bot 2.0
+# Discord Bot Universal
 
 A complete, multi-purpose Discord bot built with **Discord.js v14**. This bot features a robust command handler, economy system, moderation tools, leveling, tickets, and more.
 
