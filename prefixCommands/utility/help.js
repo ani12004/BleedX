@@ -1,4 +1,4 @@
-import { EmbedBuilder } from "discord.js";
+import { EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } from "discord.js";
 import { getGuildConfig } from "../../utils/database.js";
 
 export default {
@@ -37,7 +37,15 @@ export default {
       embed.addFields({ name: `${getCategoryEmoji(category)} ${category}`, value: commands });
     }
 
-    message.channel.send({ embeds: [embed] });
+    const row = new ActionRowBuilder()
+      .addComponents(
+        new ButtonBuilder()
+          .setLabel("Support Server")
+          .setStyle(ButtonStyle.Link)
+          .setURL("https://discord.gg/tN5MvnTTXK")
+      );
+
+    message.channel.send({ embeds: [embed], components: [row] });
   },
 };
 

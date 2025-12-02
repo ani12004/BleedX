@@ -23,7 +23,8 @@ export default {
                 { name: "Uptime", value: `${days}d ${hours}h ${minutes}m ${seconds}s`, inline: true },
                 { name: "Library", value: `Discord.js v${version}`, inline: true },
                 { name: "Node.js", value: process.version, inline: true },
-                { name: "Memory Usage", value: `${(process.memoryUsage().heapUsed / 1024 / 1024).toFixed(2)} MB`, inline: true }
+                { name: "Memory Usage", value: `${(process.memoryUsage().heapUsed / 1024 / 1024).toFixed(2)} MB`, inline: true },
+                { name: "Support Server", value: "[Join Here](https://discord.gg/tN5MvnTTXK)", inline: true }
             )
             .setFooter({ text: "Universal Template Bot" });
 
