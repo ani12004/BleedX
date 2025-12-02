@@ -172,14 +172,14 @@ export default {
             // Permissions Check
             if (command.permissions) {
                 if (!message.member.permissions.has(command.permissions)) {
-                    return message.reply({ content: `❌ You need \`${command.permissions}\` permission to use this command.`, ephemeral: true });
+                    return message.reply({ content: `❌ You need \`${command.permissions}\` permission to use this command.` });
                 }
             }
 
             // Bot Permissions Check
             if (command.botPermissions) {
                 if (!message.guild.members.me.permissions.has(command.botPermissions)) {
-                    return message.reply({ content: `❌ I need \`${command.botPermissions}\` permission to execute this command.`, ephemeral: true });
+                    return message.reply({ content: `❌ I need \`${command.botPermissions}\` permission to execute this command.` });
                 }
             }
 
@@ -192,7 +192,7 @@ export default {
             console.error("Message Event Error:", error);
             // Try to reply if possible
             if (message && message.channel) {
-                message.reply({ content: '❌ A critical error occurred while processing your message.', ephemeral: true }).catch(() => { });
+                message.reply({ content: '❌ A critical error occurred while processing your message.' }).catch(() => { });
             }
         }
     },
