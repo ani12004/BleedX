@@ -1,5 +1,6 @@
 import { Events, ChannelType, PermissionsBitField, EmbedBuilder } from 'discord.js';
 import db, { getGuildConfig, updateUser, getUser } from '../utils/database.js';
+import { checkRules } from '../utils/checkRules.js';
 
 const cooldowns = new Map();
 const spamMap = new Map();
@@ -180,6 +181,9 @@ export default {
                 return message.reply({ content: `❌ I need \`${command.botPermissions}\` permission to execute this command.`, ephemeral: true });
             }
         }
+
+        // Global Rules Check
+        if (!await checkRules(message, message.author.id)) return;
 
         try {
             await command.execute(message, args, client);

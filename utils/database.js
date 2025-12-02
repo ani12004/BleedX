@@ -56,7 +56,12 @@ db.exec(`
     last_daily INTEGER DEFAULT 0,
     last_work INTEGER DEFAULT 0,
     last_rob INTEGER DEFAULT 0,
-    rules_accepted INTEGER DEFAULT 0
+    rules_accepted INTEGER DEFAULT 0,
+    partner_id TEXT,
+    bio TEXT,
+    marriage_time INTEGER,
+    parent_id TEXT,
+    children TEXT
   );
 
   CREATE TABLE IF NOT EXISTS inventory (
@@ -90,6 +95,11 @@ try { db.prepare('ALTER TABLE guild_configs ADD COLUMN welcome_message TEXT').ru
 try { db.prepare('ALTER TABLE guild_configs ADD COLUMN level_channel TEXT').run(); } catch (e) { }
 try { db.prepare('ALTER TABLE tickets ADD COLUMN anonymous INTEGER DEFAULT 0').run(); } catch (e) { }
 try { db.prepare('ALTER TABLE economy ADD COLUMN rules_accepted INTEGER DEFAULT 0').run(); } catch (e) { }
+try { db.prepare('ALTER TABLE economy ADD COLUMN partner_id TEXT').run(); } catch (e) { }
+try { db.prepare('ALTER TABLE economy ADD COLUMN bio TEXT').run(); } catch (e) { }
+try { db.prepare('ALTER TABLE economy ADD COLUMN marriage_time INTEGER').run(); } catch (e) { }
+try { db.prepare('ALTER TABLE economy ADD COLUMN parent_id TEXT').run(); } catch (e) { }
+try { db.prepare('ALTER TABLE economy ADD COLUMN children TEXT').run(); } catch (e) { }
 
 export default db;
 
@@ -124,7 +134,20 @@ export const updateUser = (userId, guildId, updates) => {
 
 export const getEconomy = (userId) => {
   const stmt = db.prepare('SELECT * FROM economy WHERE user_id = ?');
-  return stmt.get(userId) || { user_id: userId, balance: 0, bank: 0, last_daily: 0, last_work: 0, last_rob: 0, rules_accepted: 0 };
+  return stmt.get(userId) || {
+    user_id: userId,
+    balance: 0,
+    bank: 0,
+    last_daily: 0,
+    last_work: 0,
+    last_rob: 0,
+    rules_accepted: 0,
+    partner_id: null,
+    bio: null,
+    marriage_time: null,
+    parent_id: null,
+    children: '[]'
+  };
 };
 
 export const updateEconomy = (userId, updates) => {
