@@ -98,6 +98,11 @@ export default {
         // Create Attachment
         const attachment = new AttachmentBuilder(canvas.toBuffer(), { name: 'quote.png' });
 
-        message.channel.send({ files: [attachment] });
+        try {
+            await message.channel.send({ files: [attachment] });
+        } catch (error) {
+            console.error("Failed to send quote image:", error);
+            message.reply("❌ Failed to send the image. Check my permissions!");
+        }
     },
 };

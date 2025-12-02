@@ -145,42 +145,24 @@ export const getEconomy = (userId) => {
     partner_id: null,
     bio: null,
     marriage_time: null,
-    parent_id: null,
-    children: '[]'
   };
-};
 
-export const updateEconomy = (userId, updates) => {
-  db.prepare('INSERT OR IGNORE INTO economy (user_id) VALUES (?)').run(userId);
+  export const addItem = (userId, itemId, count = 1) => {
+    const existing = db.prepare('SELECT * FROM inventory WHERE user_id = ? AND item_id = ?').get(userId, itemId);
+    if (existing) {
+      db.prepare('UPDATE inventory SET count = count + ? WHERE user_id = ? AND item_id = ?').run(count, userId, itemId);
+    } else {
+      db.prepare('INSERT INTO inventory (user_id, item_id, count) VALUES (?, ?, ?)').run(userId, itemId, count);
+    }
+  };
 
-  const keys = Object.keys(updates);
-  const values = Object.values(updates);
-  const setClause = keys.map(k => `${k} = ?`).join(', ');
-
-  const stmt = db.prepare(`UPDATE economy SET ${setClause} WHERE user_id = ?`);
-  return stmt.run(...values, userId);
-};
-
-export const getInventory = (userId) => {
-  return db.prepare('SELECT * FROM inventory WHERE user_id = ?').all(userId);
-};
-
-export const addItem = (userId, itemId, count = 1) => {
-  const existing = db.prepare('SELECT * FROM inventory WHERE user_id = ? AND item_id = ?').get(userId, itemId);
-  if (existing) {
-    db.prepare('UPDATE inventory SET count = count + ? WHERE user_id = ? AND item_id = ?').run(count, userId, itemId);
-  } else {
-    db.prepare('INSERT INTO inventory (user_id, item_id, count) VALUES (?, ?, ?)').run(userId, itemId, count);
-  }
-};
-
-export const removeItem = (userId, itemId, count = 1) => {
-  const existing = db.prepare('SELECT * FROM inventory WHERE user_id = ? AND item_id = ?').get(userId, itemId);
-  if (existing && existing.count >= count) {
-    db.prepare('UPDATE inventory SET count = count - ? WHERE user_id = ? AND item_id = ?').run(count, userId, itemId);
-    // Remove if 0? Optional.
-    db.prepare('DELETE FROM inventory WHERE user_id = ? AND item_id = ? AND count <= 0').run(userId, itemId);
-    return true;
-  }
-  return false;
-};
+  export const removeItem = (userId, itemId, count = 1) => {
+    const existing = db.prepare('SELECT * FROM inventory WHERE user_id = ? AND item_id = ?').get(userId, itemId);
+    if (existing && existing.count >= count) {
+      db.prepare('UPDATE inventory SET count = count - ? WHERE user_id = ? AND item_id = ?').run(count, userId, itemId);
+      // Remove if 0? Optional.
+      db.prepare('DELETE FROM inventory WHERE user_id = ? AND item_id = ? AND count <= 0').run(userId, itemId);
+      return true;
+    }
+    return false;
+  };
