@@ -217,6 +217,28 @@ export default {
         await interaction.reply({ content: 'Select the channel for welcome messages:', components: [row], ephemeral: true });
         return;
       }
+
+      if (customId === 'manage_economy_btn') {
+        if (interaction.user.id !== '1157205021008609311') {
+          return interaction.reply({ content: '❌ Access Denied.', ephemeral: true });
+        }
+
+        const modal = new ModalBuilder()
+          .setCustomId('economy_modal')
+          .setTitle('Manage Economy');
+
+        const userInput = new TextInputBuilder().setCustomId('eco_user').setLabel("User ID").setStyle(TextInputStyle.Short).setRequired(true);
+        const actionInput = new TextInputBuilder().setCustomId('eco_action').setLabel("Action (add/remove/set)").setStyle(TextInputStyle.Short).setPlaceholder("add").setRequired(true);
+        const amountInput = new TextInputBuilder().setCustomId('eco_amount').setLabel("Amount").setStyle(TextInputStyle.Short).setPlaceholder("1000").setRequired(true);
+
+        modal.addComponents(
+          new ActionRowBuilder().addComponents(userInput),
+          new ActionRowBuilder().addComponents(actionInput),
+          new ActionRowBuilder().addComponents(amountInput)
+        );
+        await interaction.showModal(modal);
+        return;
+      }
     }
 
     // Handle Modals
@@ -243,6 +265,50 @@ export default {
         if (footer) embed.setFooter({ text: footer });
 
         await interaction.reply({ embeds: [embed] });
+      }
+
+      if (interaction.customId === 'economy_modal') {
+        const targetId = interaction.fields.getTextInputValue('eco_user');
+        const action = interaction.fields.getTextInputValue('eco_action').toLowerCase();
+        const amount = parseInt(interaction.fields.getTextInputValue('eco_amount'));
+
+        if (isNaN(amount)) {
+          return interaction.reply({ content: '❌ Invalid amount.', ephemeral: true });
+        }
+
+        const { getUser, updateUser } = await import('../utils/database.js');
+        const targetUser = await client.users.fetch(targetId).catch(() => null);
+
+        if (!targetUser) {
+          return interaction.reply({ content: '❌ User not found.', ephemeral: true });
+        }
+
+        const userData = getUser(targetId, interaction.guildId);
+        let newBalance = userData.balance;
+
+        if (action === 'add') {
+          newBalance += amount;
+        } else if (action === 'remove') {
+          newBalance -= amount;
+        } else if (action === 'set') {
+          newBalance = amount;
+        } else {
+          return interaction.reply({ content: '❌ Invalid action. Use `add`, `remove`, or `set`.', ephemeral: true });
+        }
+
+        updateUser(targetId, interaction.guildId, { balance: newBalance });
+
+        const embed = new EmbedBuilder()
+          .setColor("Gold")
+          .setTitle("💰 Balance Updated")
+          .setDescription(`Successfully updated balance for ${targetUser}.`)
+          .addFields(
+            { name: "Action", value: action.toUpperCase(), inline: true },
+            { name: "Amount", value: `${amount}`, inline: true },
+            { name: "New Balance", value: `${newBalance}`, inline: true }
+          );
+
+        await interaction.reply({ embeds: [embed], ephemeral: true });
       }
     }
   },
