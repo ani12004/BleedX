@@ -94,7 +94,9 @@ export default {
             }
         }
 
+        const userId = message.author.id;
         const guildId = message.guild.id;
+        const now = Date.now();
 
         // --- AUTO MODERATION ---
         // 1. Bad Words Filter
