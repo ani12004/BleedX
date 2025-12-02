@@ -45,7 +45,8 @@ db.exec(`
     user_id TEXT,
     channel_id TEXT,
     closed INTEGER DEFAULT 0,
-    transcript TEXT
+    transcript TEXT,
+    anonymous INTEGER DEFAULT 0
   );
 
   CREATE TABLE IF NOT EXISTS giveaways (
@@ -70,6 +71,7 @@ db.exec(`
 // Migrations
 try { db.prepare('ALTER TABLE guild_configs ADD COLUMN welcome_message TEXT').run(); } catch (e) { }
 try { db.prepare('ALTER TABLE guild_configs ADD COLUMN level_channel TEXT').run(); } catch (e) { }
+try { db.prepare('ALTER TABLE tickets ADD COLUMN anonymous INTEGER DEFAULT 0').run(); } catch (e) { }
 
 export default db;
 

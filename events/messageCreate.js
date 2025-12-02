@@ -1,6 +1,5 @@
 import { Events, ChannelType, PermissionsBitField, EmbedBuilder } from 'discord.js';
-import { getGuildConfig, updateUser, getUser } from '../utils/database.js';
-import { getTicket, setTicket, findTicketOwner } from '../utils/modmailDB.js';
+import db, { getGuildConfig, updateUser, getUser } from '../utils/database.js';
 
 const cooldowns = new Map();
 const spamMap = new Map();
@@ -13,7 +12,8 @@ export default {
         // --- MODMAIL: DM Handling ---
         if (!message.guild) {
             const userId = message.author.id;
-            const existingChannelId = getTicket(userId);
+            const ticket = db.prepare('SELECT channel_id FROM tickets WHERE user_id = ? AND closed = 0').get(userId);
+            const existingChannelId = ticket ? ticket.channel_id : null;
 
             // 1. Existing Ticket
             if (existingChannelId) {
@@ -48,11 +48,11 @@ export default {
                 permissionOverwrites: [
                     { id: guild.id, deny: [PermissionsBitField.Flags.ViewChannel] },
                     { id: client.user.id, allow: [PermissionsBitField.Flags.ViewChannel, PermissionsBitField.Flags.SendMessages] }
-                    // Add roles here if needed
                 ]
             });
 
-            setTicket(userId, channel.id);
+            const ticketId = `${guild.id}-${userId}-${Date.now()}`;
+            db.prepare('INSERT INTO tickets (ticket_id, guild_id, user_id, channel_id) VALUES (?, ?, ?, ?)').run(ticketId, guild.id, userId, channel.id);
 
             const embed = new EmbedBuilder()
                 .setColor("Green")
@@ -66,22 +66,27 @@ export default {
         }
 
         // --- MODMAIL: Reply to User ---
-        const ticketOwner = findTicketOwner(message.channel.id);
-        if (ticketOwner) {
+        const ticket = db.prepare('SELECT * FROM tickets WHERE channel_id = ? AND closed = 0').get(message.channel.id);
+        if (ticket) {
             const config = getGuildConfig(message.guild.id);
             const prefix = config.prefix || 's?';
 
             // If it's NOT a command, relay to user
             if (!message.content.startsWith(prefix)) {
-                const [userId] = ticketOwner;
+                const userId = ticket.user_id;
                 const user = await client.users.fetch(userId).catch(() => null);
 
                 if (user) {
                     const embed = new EmbedBuilder()
                         .setColor("Green")
-                        .setAuthor({ name: message.author.tag, iconURL: message.author.displayAvatarURL() })
                         .setDescription(message.content || "*Attachment/No Content*")
                         .setTimestamp();
+
+                    if (ticket.anonymous) {
+                        embed.setAuthor({ name: "Staff Team", iconURL: message.guild.iconURL() });
+                    } else {
+                        embed.setAuthor({ name: message.author.tag, iconURL: message.author.displayAvatarURL() });
+                    }
 
                     if (message.attachments.size > 0) {
                         embed.setImage(message.attachments.first().url);
