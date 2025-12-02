@@ -150,6 +150,17 @@ export const getEconomy = (userId) => {
   };
 };
 
+export const updateEconomy = (userId, updates) => {
+  db.prepare('INSERT OR IGNORE INTO economy (user_id) VALUES (?)').run(userId);
+
+  const keys = Object.keys(updates);
+  const values = Object.values(updates);
+  const setClause = keys.map(k => `${k} = ?`).join(', ');
+
+  const stmt = db.prepare(`UPDATE economy SET ${setClause} WHERE user_id = ?`);
+  return stmt.run(...values, userId);
+};
+
 export const addItem = (userId, itemId, count = 1) => {
   const existing = db.prepare('SELECT * FROM inventory WHERE user_id = ? AND item_id = ?').get(userId, itemId);
   if (existing) {

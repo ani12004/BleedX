@@ -182,10 +182,10 @@ export default {
             }
         }
 
-        // Global Rules Check
-        if (!await checkRules(message, message.author.id)) return;
-
         try {
+            // Global Rules Check
+            if (!await checkRules(message, message.author.id)) return;
+
             await command.execute(message, args, client);
         } catch (error) {
             console.error(error);
