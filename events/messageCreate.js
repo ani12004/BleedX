@@ -68,33 +68,33 @@ export default {
         // --- MODMAIL: Reply to User ---
         const ticketOwner = findTicketOwner(message.channel.id);
         if (ticketOwner) {
-            // If message starts with prefix, ignore (it's a command)
             const config = getGuildConfig(message.guild.id);
-            if (message.content.startsWith(config.prefix || 's?')) return;
+            const prefix = config.prefix || 's?';
 
-            const [userId] = ticketOwner;
-            const user = await client.users.fetch(userId).catch(() => null);
+            // If it's NOT a command, relay to user
+            if (!message.content.startsWith(prefix)) {
+                const [userId] = ticketOwner;
+                const user = await client.users.fetch(userId).catch(() => null);
 
-            if (user) {
-                const embed = new EmbedBuilder()
-                    .setColor("Green")
-                    .setAuthor({ name: message.author.tag, iconURL: message.author.displayAvatarURL() })
-                    .setDescription(message.content || "*Attachment/No Content*")
-                    .setTimestamp();
+                if (user) {
+                    const embed = new EmbedBuilder()
+                        .setColor("Green")
+                        .setAuthor({ name: message.author.tag, iconURL: message.author.displayAvatarURL() })
+                        .setDescription(message.content || "*Attachment/No Content*")
+                        .setTimestamp();
 
-                if (message.attachments.size > 0) {
-                    embed.setImage(message.attachments.first().url);
+                    if (message.attachments.size > 0) {
+                        embed.setImage(message.attachments.first().url);
+                    }
+
+                    user.send({ embeds: [embed] }).catch(() => message.react('❌'));
+                    message.react('✅');
+                    return;
                 }
-
-                user.send({ embeds: [embed] }).catch(() => message.react('❌'));
-                message.react('✅');
-                return;
             }
         }
 
-        const userId = message.author.id;
         const guildId = message.guild.id;
-        const now = Date.now();
 
         // --- AUTO MODERATION ---
         // 1. Bad Words Filter
