@@ -24,6 +24,7 @@ export default {
       seenCommands.add(cmd.name);
 
       const category = cmd.category ? cmd.category.charAt(0).toUpperCase() + cmd.category.slice(1) : "Other";
+      if (category === "Modmail") return; // Skip disabled category
       if (!categories.has(category)) {
         categories.set(category, []);
       }
