@@ -1,7 +1,7 @@
 {
     "name": "imperium-website",
     "version": "1.0.0",
-    "description": "Website for Imperium",
+    "description": "Imperium: The ultimate multi-purpose Discord bot. Features advanced moderation, global economy, leveling, social commands, and 24/7 uptime. Elevate your community with powerful tools.",
     "main": "server.js",
     "scripts": {
         "start": "node server.js",

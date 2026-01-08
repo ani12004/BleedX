@@ -1,7 +1,7 @@
 {
   "name": "imperium",
   "version": "1.0.0",
-  "description": "A complete Discord bot built with Discord.js v14",
+  "description": "Imperium: The ultimate multi-purpose Discord bot. Features advanced moderation, global economy, leveling, social commands, and 24/7 uptime. Elevate your community with powerful tools.",
   "main": "index.js",
   "type": "module",
   "scripts": {
