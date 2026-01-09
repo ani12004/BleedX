@@ -30,6 +30,10 @@ app.get('/privacy', (req, res) => {
     res.sendFile(path.join(__dirname, 'privacy.html'));
 });
 
+app.get('/docs', (req, res) => {
+    res.sendFile(path.join(__dirname, 'docs.html'));
+});
+
 // Fallback to index.html for any other requests
 app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, 'index.html'));

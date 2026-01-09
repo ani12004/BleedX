@@ -4,7 +4,7 @@
 
 A complete, multi-purpose Discord bot built with **Discord.js v14**. This bot features a robust command handler, universal economy system, social features, moderation tools, leveling, tickets, and more.
 
-**🌐 Website:** [bleedx.netlify.app](https://universalgg.netlify.app/)
+**🌐 Website:** [imperium.bot](https://imperiumbot.netlify.app/)
 
 ## 🚀 Features
 
@@ -146,6 +146,6 @@ The default prefix is `,`. You can change it using `,setprefix`.
 Contributions are welcome! Please feel free to submit a Pull Request.
 
 ## 📄 License
-**© 2025 BLEEDX. All Rights Reserved.**
+**© 2025 IMPERIUM. All Rights Reserved.**
 
 This project is proprietary and confidential. Unauthorized copying, distribution, modification, or use of this file, via any medium, is strictly prohibited without the express written permission of the owner.

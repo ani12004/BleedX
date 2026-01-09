@@ -13,13 +13,14 @@
 
 <body>
     <!-- Background Glow -->
+    <!-- Background Glow -->
     <div class="bg-glow"></div>
 
     <!-- Navbar -->
     <nav class="navbar">
         <div class="container nav-content">
             <a href="/" class="logo">
-                <img src="imperium_logo.png" alt="Imperium Logo" class="logo-img">
+                <img src="logo.png" alt="Imperium Logo" class="logo-img">
                 Imperium
             </a>
             <div class="nav-links">
@@ -38,25 +39,31 @@
 
     <!-- Hero Section -->
     <section class="hero">
+        <!-- Floating OS Commands Background -->
+        <div class="hero-floating-commands">
+            <div class="cmd-snippet cmd-1"><span>></span> system.deploy(anti_nuke)</div>
+            <div class="cmd-snippet cmd-2"><span>$</span> npm install imperium-core</div>
+            <div class="cmd-snippet cmd-3"><span>></span> user.grant_xp(500)</div>
+            <div class="cmd-snippet cmd-4"><span>></span> bot.latency: 12ms</div>
+            <div class="cmd-snippet cmd-5"><span>$</span> ./start_economy.sh</div>
+        </div>
         <div class="container hero-content">
-            <div class="hero-badge animate-float">
-                <i class="fas fa-star"></i> #1 Multi-Purpose Discord Bot
-            </div>
+
+            <!-- Hero Badge Removed as per design -->
             <h1 class="hero-title">
-                The Ultimate <br>
-                <span class="text-gradient">Multi-Purpose Tool</span>
+                <span class="text-gradient">Imperium</span>
             </h1>
             <p class="hero-description">
-                Supercharge your server with advanced moderation, universal economy, custom social systems, and powerful
-                utility features.
+                Why settle for many when Imperium alone does it all? Experience the ultimate all-in-one solution for
+                your community.
             </p>
             <div class="hero-buttons">
                 <a href="https://discord.com/oauth2/authorize?client_id=1447868811045900299&permissions=8&integration_type=0&scope=bot"
                     class="btn btn-primary">
-                    Get Started Now
+                    Get Started
                 </a>
                 <a href="/commands" class="btn btn-secondary">
-                    Explore Commands
+                    Features
                 </a>
             </div>
 
@@ -156,8 +163,7 @@
                     <p style="color: var(--text-muted); font-size: 0.9rem;">Hug, kiss, slap, and more with anime GIFs.
                     </p>
                 </div>
-                <div class="integration-card">
-                </div>
+
             </div>
     </section>
 
@@ -171,7 +177,7 @@
             <div class="feature-grid" style="align-items: center;">
                 <div class="profile-preview">
                     <div class="profile-header">
-                        <div class="profile-avatar"></div>
+                        <img src="default_avatar.png" class="profile-avatar" alt="User Profile">
                         <div class="profile-info">
                             <h3 style="color: white;">User Profile</h3>
                             <div class="profile-badges">
@@ -213,34 +219,39 @@
             <div class="feature-grid">
                 <div class="feature-card">
                     <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 15px;">
-                        <div style="width: 40px; height: 40px; background: #333; border-radius: 50%;"></div>
+                        <img src="default_avatar.png"
+                            style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover;" alt="User">
                         <div>
-                            <h4 style="color: white; font-weight: 600;">Alex</h4>
+                            <h4 style="color: white; font-weight: 600; margin: 0; line-height: 1.2;">Alex</h4>
                             <span style="color: var(--accent-secondary); font-size: 0.8rem;">Server Owner</span>
                         </div>
                     </div>
-                    <p class="card-desc">"BleedX completely transformed my server. The moderation tools are a
-                        lifesaver!"</p>
+                    <p class="card-desc">"I replaced 5 different bots with just Imperium. The VoiceMaster and AutoMod
+                        are seamless. My staff team absolutely loves the dashboard."</p>
                 </div>
                 <div class="feature-card">
                     <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 15px;">
-                        <div style="width: 40px; height: 40px; background: #333; border-radius: 50%;"></div>
+                        <img src="default_avatar.png"
+                            style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover;" alt="User">
                         <div>
-                            <h4 style="color: white; font-weight: 600;">Sarah</h4>
+                            <h4 style="color: white; font-weight: 600; margin: 0; line-height: 1.2;">Sarah</h4>
                             <span style="color: var(--accent-secondary); font-size: 0.8rem;">Community Manager</span>
                         </div>
                     </div>
-                    <p class="card-desc">"The economy system is so engaging. My members love collecting the cards."</p>
+                    <p class="card-desc">"The global economy and leveling system hooked my members instantly. Activity
+                        has doubled since we added the rank cards!"</p>
                 </div>
                 <div class="feature-card">
                     <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 15px;">
-                        <div style="width: 40px; height: 40px; background: #333; border-radius: 50%;"></div>
+                        <img src="default_avatar.png"
+                            style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover;" alt="User">
                         <div>
-                            <h4 style="color: white; font-weight: 600;">Mike</h4>
+                            <h4 style="color: white; font-weight: 600; margin: 0; line-height: 1.2;">Mike</h4>
                             <span style="color: var(--accent-secondary); font-size: 0.8rem;">Moderator</span>
                         </div>
                     </div>
-                    <p class="card-desc">"Best anti-nuke bot I've used. It stopped a raid instantly last week."</p>
+                    <p class="card-desc">"The anti-nuke protection is no joke. We got raided, and Imperium froze it in
+                        seconds. Essential for any large community."</p>
                 </div>
             </div>
         </div>
@@ -251,7 +262,7 @@
         <div class="container">
             <div class="section-header">
                 <h2 class="section-title">Everything You Need</h2>
-                <p class="section-subtitle">Over 800+ commands at your fingertips.</p>
+                <p class="section-subtitle">Over 100+ commands at your fingertips.</p>
             </div>
             <div class="feature-grid">
                 <div class="feature-card">
@@ -297,7 +308,7 @@
             <div class="footer-grid">
                 <div class="footer-brand">
                     <a href="/" class="logo">
-                        <img src="imperium_logo.png" alt="Imperium Logo" class="logo-img">
+                        <img src="logo.png" alt="Imperium Logo" class="logo-img">
                         Imperium
                     </a>
                     <p>The ultimate multi-purpose Discord bot for moderation, economy, and fun.</p>
@@ -314,7 +325,7 @@
                 <div class="footer-col">
                     <h4>Resources</h4>
                     <ul class="footer-links">
-                        <li><a href="#">Documentation</a></li>
+                        <li><a href="/docs">Documentation</a></li>
                         <li><a href="#">API</a></li>
                         <li><a href="#">Status</a></li>
                     </ul>

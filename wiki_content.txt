@@ -1,10 +1,10 @@
-# BleedX - Official Wiki 📚
+# Imperium - Official Wiki 📚
 
 ## 🏠 Home
 
-**Welcome to BleedX!** 🚀
+**Welcome to Imperium!** 🚀
 
-**BleedX** is a powerful, multi-purpose Discord bot designed to manage your server with style and efficiency. It features a robust economy system, social profiles, advanced moderation, and much more.
+**Imperium** is a powerful, multi-purpose Discord bot designed to manage your server with style and efficiency. It features a robust economy system, social profiles, advanced moderation, and much more.
 
 ### 🌟 Key Features
 *   **💰 Global Economy:** Banking, work, robbery, and shop systems.
@@ -18,7 +18,7 @@
 
 ## 📥 Installation Guide 🛠️
 
-Follow these steps to self-host BleedX on your own machine or VPS.
+Follow these steps to self-host Imperium on your own machine or VPS.
 
 ### Prerequisites
 *   [Node.js v16.9.0 or higher](https://nodejs.org/)
@@ -28,8 +28,8 @@ Follow these steps to self-host BleedX on your own machine or VPS.
 ### Setup
 1.  **Clone the Repository:**
     ```bash
-    git clone https://github.com/yourusername/bleedx.git
-    cd bleedx
+    git clone https://github.com/yourusername/imperium.git
+    cd imperium
     ```
 
 2.  **Install Dependencies:**
