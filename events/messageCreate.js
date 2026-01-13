@@ -1,6 +1,8 @@
 import { Events, ChannelType, PermissionsBitField, EmbedBuilder } from 'discord.js';
 import db, { getGuildConfig, updateUser, getUser } from '../utils/database.js';
 import { checkRules } from '../utils/checkRules.js';
+import moment from 'moment';
+
 
 const cooldowns = new Map();
 const spamMap = new Map();
@@ -47,6 +49,44 @@ export default {
                 }
             }
             // -----------------------
+
+            // --- AFK SYSTEM ---
+            // 1. Check if Author is AFK -> Remove AFK
+            const { data: authorAFK } = await db.from('afk').select('*').eq('user_id', userId).single();
+            if (authorAFK) {
+                await db.from('afk').delete().eq('user_id', userId);
+                const duration = moment.duration(Date.now() - authorAFK.timestamp).humanize();
+                message.channel.send(`👋 Welcome back **${message.author.username}**! You were AFK for ${duration}.`);
+
+                // Restore nickname if it has [AFK] tag
+                if (message.member.manageable && message.guild.members.me.permissions.has("ManageNicknames")) {
+                    const currentNick = message.member.nickname;
+                    if (currentNick && currentNick.startsWith("[AFK] ")) {
+                        const originalNick = currentNick.replace("[AFK] ", "");
+                        await message.member.setNickname(originalNick).catch(() => { });
+                    }
+                }
+            }
+
+            // 2. Check Mentions -> Report AFK
+            if (message.mentions.users.size > 0) {
+                for (const [mentionedId, mentionedUser] of message.mentions.users) {
+                    if (mentionedId === userId || mentionedUser.bot) continue;
+
+                    const { data: targetAFK } = await db.from('afk').select('*').eq('user_id', mentionedId).single();
+                    if (targetAFK) {
+                        const duration = moment.duration(Date.now() - targetAFK.timestamp).humanize();
+                        const embed = new EmbedBuilder()
+                            .setColor("#F59E0B") // Premium Gold
+                            .setAuthor({ name: `${mentionedUser.username} is AFK`, iconURL: mentionedUser.displayAvatarURL() })
+                            .setDescription(`> ${targetAFK.reason}`)
+                            .addFields({ name: 'Since', value: `${duration} ago`, inline: true })
+                            .setFooter({ text: 'Imperium • User is unavailable' });
+                        message.channel.send({ embeds: [embed] });
+                    }
+                }
+            }
+            // ------------------
 
             // --- XP SYSTEM ---
             if (!cooldowns.has(userId)) {

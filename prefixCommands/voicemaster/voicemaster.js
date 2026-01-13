@@ -88,12 +88,52 @@ export default {
             if (target.voice.channelId === voiceChannel.id) target.voice.disconnect();
             return message.reply(`🚫 ${target} rejected.`);
         } else if (action === "claim") {
-            // Logic to claim if owner left
+            const voiceChannel = message.member.voice.channel;
             // Check if current owner is present
-            // This requires tracking owner more robustly.
-            // For now, simple claim: if you are in it and no one has ManageChannels, you get it.
-            // But we gave ManageChannels to owner.
-            return message.reply("⚠️ Claim logic not fully implemented yet.");
+            // We need to identify the current owner. 
+            // In setup, we didn't explicitly store owner ID, but we can check who has ManageChannels.
+            // However, previous code assumed "owner" had ManageChannels.
+            // Let's find who currently has ManageChannels permission overwrite that is a member.
+
+            // Filter overwrites for members with ManageChannels
+            const ownerOverwrite = voiceChannel.permissionOverwrites.cache.find(perm =>
+                perm.type === 1 && // Member
+                perm.allow.has(PermissionsBitField.Flags.ManageChannels)
+            );
+
+            let currentOwnerId = ownerOverwrite ? ownerOverwrite.id : null;
+
+            if (currentOwnerId === message.member.id) {
+                return message.reply("⚠️ You already own this channel.");
+            }
+
+            // Check if current owner is in the channel
+            if (currentOwnerId && voiceChannel.members.has(currentOwnerId)) {
+                return message.reply("❌ The current owner is still in the channel.");
+            }
+
+            // Transfer ownership
+            try {
+                // Remove old owner permissions if exists
+                if (currentOwnerId) {
+                    await voiceChannel.permissionOverwrites.delete(currentOwnerId);
+                }
+
+                // Set new owner permissions
+                await voiceChannel.permissionOverwrites.edit(message.member, {
+                    ManageChannels: true,
+                    Connect: true
+                });
+
+                // Update name (optional, but nice)
+                // await voiceChannel.setName(`${message.member.user.username}'s Channel`);
+
+                return message.reply("✅ You are now the owner of this channel.");
+
+            } catch (e) {
+                console.error("Claim Error:", e);
+                return message.reply("❌ Failed to claim channel.");
+            }
         } else {
             return message.reply("❌ Usage: ,vm setup | lock | unlock | permit | reject");
         }

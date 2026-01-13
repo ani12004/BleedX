@@ -16,23 +16,27 @@ export default supabase; // Export client as default
 
 // Helper functions matching the previous API (but ASYNC)
 const guildConfigCache = new Map();
+const CACHE_TTL = 10 * 60 * 1000; // 10 minutes
 
 export const getGuildConfig = async (guildId) => {
   if (guildConfigCache.has(guildId)) {
-    return guildConfigCache.get(guildId);
+    const { data, timestamp } = guildConfigCache.get(guildId);
+    if (Date.now() - timestamp < CACHE_TTL) {
+      return data;
+    }
   }
+
   const { data, error } = await supabase
     .from('guild_configs')
     .select('*')
-    .eq('guild_id', guildId) // Assuming guild_id is the column name
+    .eq('guild_id', guildId)
     .single();
 
   if (error || !data) {
-    // Return default
     return { guild_id: guildId, prefix: ',' };
   }
 
-  guildConfigCache.set(guildId, data);
+  guildConfigCache.set(guildId, { data, timestamp: Date.now() });
   return data;
 };
 
@@ -42,7 +46,7 @@ export const setGuildConfig = async (guildId, key, value) => {
   current[key] = value;
 
   // Update cache
-  guildConfigCache.set(guildId, current);
+  guildConfigCache.set(guildId, { data: current, timestamp: Date.now() });
 
   // Upsert to DB
   const { data, error } = await supabase

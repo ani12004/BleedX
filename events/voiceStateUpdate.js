@@ -3,7 +3,7 @@ import { getGuildConfig } from "../utils/database.js";
 
 export default {
     name: "voiceStateUpdate",
-    async execute(client, oldState, newState) {
+    async execute(oldState, newState, client) {
         const guild = newState.guild;
         const config = await getGuildConfig(guild.id);
 

@@ -16,10 +16,11 @@ export default {
     await target.kick(reason);
 
     const embed = new EmbedBuilder()
-      .setColor("#FFB6C1")
-      .setTitle("🌸 User Kicked")
-      .setDescription(`**${target.user.tag}** has been kicked.`)
+      .setColor("#F59E0B")
+      .setTitle("User Kicked")
+      .setDescription(`> **User:** ${target.user.tag}\n> **ID:** ${target.id}`)
       .addFields({ name: "Reason", value: reason })
+      .setFooter({ text: `Action by ${message.author.username}` })
       .setTimestamp();
 
     message.channel.send({ embeds: [embed] });

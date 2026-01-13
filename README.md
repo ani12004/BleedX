@@ -4,7 +4,7 @@
 
 A complete, multi-purpose Discord bot built with **Discord.js v14**. This bot features a robust command handler, universal economy system, social features, moderation tools, leveling, tickets, and more.
 
-**🌐 Website:** [imperium.bot](https://imperiumbot.netlify.app/)
+**🌐 Website:** [imperium.gg](https://imperiumgg.netlify.app)
 
 ## 🚀 Features
 

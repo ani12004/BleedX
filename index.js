@@ -46,6 +46,32 @@ client.db = db; // Attach DB to client
 // ---------------------------------
 // Start the bot
 // ---------------------------------
+
+// ---------------------------------
+// Global Error Handling (Fault Tolerance)
+// ---------------------------------
+process.on('unhandledRejection', (reason, promise) => {
+  logger.error(`[Anti-Crash] Unhandled Rejection: ${reason}`);
+  // console.error(promise);
+});
+
+process.on('uncaughtException', (err) => {
+  logger.error(`[Anti-Crash] Uncaught Exception: ${err}`);
+  // console.error(err);
+});
+
+process.on('uncaughtExceptionMonitor', (err, origin) => {
+  logger.error(`[Anti-Crash] Uncaught Exception Monitor: ${err}, Origin: ${origin}`);
+});
+
+client.on('error', (error) => {
+  logger.error(`[Client Error] ${error.message}`);
+});
+
+client.on('warn', (message) => {
+  logger.warn(`[Client Warn] ${message}`);
+});
+
 async function startBot() {
   try {
     logger.info('Starting bot...');
@@ -59,9 +85,16 @@ async function startBot() {
     // Load slash commands
     await loadSlashCommands(client);
 
+    // Basic DB Check
+    const { error } = await db.from('guild_configs').select('guild_id').limit(1);
+    if (error) {
+      logger.error(`Database connection failed: ${error.message}`);
+      throw new Error("Database Unreachable");
+    }
+    logger.info("Database connection verified.");
+
     // Load active tickets into memory
     client.activeTickets = new Map();
-    // const tickets = db.prepare('SELECT * FROM tickets WHERE closed = 0').all();
     const { data: tickets } = await db.from('tickets').select('*').eq('closed', 0);
     if (tickets) {
       for (const ticket of tickets) {
@@ -75,15 +108,18 @@ async function startBot() {
 
   } catch (error) {
     logger.error(`Failed to start bot: ${error.message}`);
-    process.exit(1);
+    // Retry login instead of exiting
+    logger.info('Retrying registration in 5 seconds...');
+    setTimeout(startBot, 5000);
   }
 }
+
 
 // ADDED: API Endpoint for Bot Stats
 // ADDED: API Endpoint for Bot Stats
 client.once('ready', () => {
   // Security: Restrict CORS to specific frontend domains
-  const allowedOrigins = ['https://imperiumbot.netlify.app', 'http://localhost:3000' , 'https://imperiumgg.netlify.app'];
+  const allowedOrigins = ['https://imperiumbot.netlify.app', 'http://localhost:3000', 'https://imperiumgg.netlify.app'];
 
   app.use(cors({
     origin: function (origin, callback) {

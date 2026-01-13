@@ -10,16 +10,14 @@ export default {
         const user = target.user;
 
         const embed = new EmbedBuilder()
-            .setColor(target.displayHexColor)
+            .setColor(target.displayHexColor === '#000000' ? '#5865F2' : target.displayHexColor)
             .setThumbnail(user.displayAvatarURL({ dynamic: true, size: 512 }))
             .setAuthor({ name: user.tag, iconURL: user.displayAvatarURL() })
             .addFields(
-                { name: "🆔 ID", value: user.id, inline: true },
-                { name: "📅 Joined Server", value: moment(target.joinedAt).format("LLLL"), inline: true },
-                { name: "📅 Account Created", value: moment(user.createdAt).format("LLLL"), inline: true },
-                { name: "🎭 Roles", value: target.roles.cache.map(r => r).join(" ").replace("@everyone", "") || "None" }
+                { name: "Identity", value: `> **ID:** ${user.id}\n> **Created:** <t:${Math.floor(user.createdTimestamp / 1000)}:R>`, inline: true },
+                { name: "Member", value: `> **Joined:** <t:${Math.floor(target.joinedTimestamp / 1000)}:R>\n> **Roles:** ${target.roles.cache.size - 1}`, inline: true }
             )
-            .setFooter({ text: `Requested by ${message.author.tag}` })
+            .setFooter({ text: `Imperium • Requested by ${message.author.username}` })
             .setTimestamp();
 
         message.channel.send({ embeds: [embed] });
