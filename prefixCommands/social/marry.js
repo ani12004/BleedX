@@ -11,8 +11,8 @@ export default {
         if (target.id === message.author.id) return message.reply("You can't marry yourself!");
         if (target.bot) return message.reply("You can't marry a bot!");
 
-        const user = getEconomy(message.author.id);
-        const partner = getEconomy(target.id);
+        const user = await getEconomy(message.author.id);
+        const partner = await getEconomy(target.id);
 
         if (user.partner_id) return message.reply("You are already married!");
         if (partner.partner_id) return message.reply("That person is already married!");

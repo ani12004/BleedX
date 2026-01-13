@@ -8,7 +8,7 @@ export default {
     aliases: ["lvl", "xp"],
     async execute(message, args) {
         const target = message.mentions.members.first() || message.member;
-        const user = getUser(target.id, message.guild.id);
+        const user = await getUser(target.id, message.guild.id);
 
         const nextLevelXp = (user.level + 1) * 100;
         const progress = Math.floor((user.xp / nextLevelXp) * 100);

@@ -9,7 +9,7 @@ export default {
     async execute(message, args) {
         if (!await checkRules(message, message.author.id)) return;
 
-        const user = getEconomy(message.author.id);
+        const user = await getEconomy(message.author.id);
         const cooldown = 5 * 60 * 1000; // 5 minutes
         const now = Date.now();
 

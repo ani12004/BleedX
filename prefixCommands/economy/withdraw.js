@@ -10,7 +10,7 @@ export default {
     async execute(message, args) {
         if (!await checkRules(message, message.author.id)) return;
 
-        const user = getEconomy(message.author.id);
+        const user = await getEconomy(message.author.id);
         let amount = args[0];
 
         if (!amount) return message.reply("Usage: `s?with <amount|all>`");

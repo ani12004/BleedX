@@ -14,7 +14,7 @@ export default {
             const target = message.mentions.members.first();
             if (!target) return message.reply(`${emojis.ERROR} Mention someone to disown.`);
 
-            const userEco = getEconomy(message.author.id);
+            const userEco = await getEconomy(message.author.id);
             let children = JSON.parse(userEco.children || "[]");
 
             if (!children.includes(target.id)) return message.reply(`${emojis.ERROR} They are not your child.`);
@@ -31,7 +31,7 @@ export default {
             if (!target) return message.reply(`${emojis.ERROR} Mention someone to adopt.`);
             if (target.id === message.author.id) return message.reply(`${emojis.ERROR} You cannot adopt yourself.`);
 
-            const targetEco = getEconomy(target.id);
+            const targetEco = await getEconomy(target.id);
             if (targetEco.parent_id) return message.reply(`${emojis.ERROR} They already have a parent.`);
 
             message.channel.send(`${target}, **${message.author.username}** wants to adopt you! Type \`yes\` to accept.`);
@@ -40,7 +40,7 @@ export default {
             const collector = message.channel.createMessageCollector({ filter, time: 30000, max: 1 });
 
             collector.on('collect', async m => {
-                const userEco = getEconomy(message.author.id);
+                const userEco = await getEconomy(message.author.id);
                 let children = JSON.parse(userEco.children || "[]");
                 children.push(target.id);
 

@@ -17,8 +17,8 @@ export default {
         if (target.id === message.author.id) return message.reply(`${emojis.ERROR} You cannot pay yourself.`);
         if (isNaN(amount) || amount <= 0) return message.reply(`${emojis.ERROR} Please provide a valid amount.`);
 
-        const sender = getEconomy(message.author.id);
-        const receiver = getEconomy(target.id);
+        const sender = await getEconomy(message.author.id);
+        const receiver = await getEconomy(target.id);
 
         if (sender.balance < amount) return message.reply(`${emojis.ERROR} You don't have enough money.`);
 

@@ -7,7 +7,7 @@ export default {
   description: "Displays a list of available commands.",
   aliases: ["h", "commands"],
   async execute(message, args, client) {
-    const config = getGuildConfig(message.guild.id);
+    const config = await getGuildConfig(message.guild.id);
     const prefix = config.prefix || "s?";
 
     const embed = new EmbedBuilder()

@@ -8,7 +8,7 @@ export default {
         const target = message.mentions.users.first();
         if (!target) return message.reply("You need to mention the child to disown.");
 
-        const parent = getEconomy(message.author.id);
+        const parent = await getEconomy(message.author.id);
         const currentChildren = JSON.parse(parent.children || '[]');
 
         if (!currentChildren.includes(target.id)) {

@@ -5,7 +5,7 @@ import { createCanvas, loadImage, registerFont } from 'canvas';
 export default {
   name: Events.GuildMemberAdd,
   async execute(member) {
-    const config = getGuildConfig(member.guild.id);
+    const config = await getGuildConfig(member.guild.id);
     if (!config.welcome_channel) return;
 
     const channel = member.guild.channels.cache.get(config.welcome_channel);

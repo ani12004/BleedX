@@ -274,7 +274,7 @@ export default {
 
       if (customId === 'accept_rules_btn') {
         const { updateEconomy } = await import('../utils/database.js');
-        updateEconomy(interaction.user.id, { rules_accepted: 1 });
+        await updateEconomy(interaction.user.id, { rules_accepted: 1 });
 
         await interaction.reply({ content: `${emojis.SUCCESS} **Rules Accepted!** You can now use economy commands.`, ephemeral: true });
 
@@ -388,7 +388,7 @@ export default {
 
       if (interaction.customId === 'welcome_channel_select') {
         const channelId = interaction.values[0];
-        setGuildConfig(interaction.guildId, 'welcome_channel', channelId);
+        await setGuildConfig(interaction.guildId, 'welcome_channel', channelId);
         await interaction.reply({ content: `${emojis.SUCCESS} Welcome channel set to <#${channelId}>!`, ephemeral: true });
         return;
       }
@@ -396,7 +396,7 @@ export default {
       if (interaction.customId === 'leveling_channel_select') {
         try {
           const channelId = interaction.values[0];
-          setGuildConfig(interaction.guildId, 'level_channel', channelId);
+          await setGuildConfig(interaction.guildId, 'level_channel', channelId);
           await interaction.reply({ content: `✅ Leveling channel set to <#${channelId}>!`, ephemeral: true });
         } catch (error) {
           console.error("Leveling setup error:", error);
@@ -434,7 +434,7 @@ export default {
       if (interaction.customId === 'prefix_modal') {
         const newPrefix = interaction.fields.getTextInputValue('prefix_input');
         const { setGuildConfig } = await import('../utils/database.js');
-        setGuildConfig(interaction.guildId, 'prefix', newPrefix);
+        await setGuildConfig(interaction.guildId, 'prefix', newPrefix);
         await interaction.reply({ content: `${emojis.SUCCESS} Server prefix updated to: \`${newPrefix}\``, ephemeral: true });
         return;
       }
@@ -442,7 +442,7 @@ export default {
         const message = interaction.fields.getTextInputValue('welcome_message_input');
         // Save to DB
         const { setGuildConfig } = await import('../utils/database.js');
-        setGuildConfig(interaction.guildId, 'welcome_message', message);
+        await setGuildConfig(interaction.guildId, 'welcome_message', message);
         await interaction.reply({ content: '✅ Welcome message updated!', ephemeral: true });
       }
 
@@ -487,7 +487,7 @@ export default {
           return interaction.reply({ content: '❌ User not found.', ephemeral: true });
         }
 
-        const userData = getEconomy(targetId);
+        const userData = await getEconomy(targetId);
         let newBalance = userData.balance;
 
         if (action === 'add') {
@@ -500,7 +500,7 @@ export default {
           return interaction.reply({ content: '❌ Invalid action. Use `add`, `remove`, or `set`.', ephemeral: true });
         }
 
-        updateEconomy(targetId, { balance: newBalance });
+        await updateEconomy(targetId, { balance: newBalance });
 
         const embed = new EmbedBuilder()
           .setColor("Gold")

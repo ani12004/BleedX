@@ -26,7 +26,7 @@ export default {
             return message.reply("Usage: `s?cf <amount> <heads/tails>`");
         }
 
-        const user = getEconomy(message.author.id);
+        const user = await getEconomy(message.author.id);
         if (user.balance < amount) {
             return message.reply("❌ You don't have enough money.");
         }

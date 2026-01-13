@@ -10,7 +10,7 @@ export default {
         if (!await checkRules(message, message.author.id)) return;
 
         const userId = message.author.id;
-        const user = getEconomy(userId);
+        const user = await getEconomy(userId);
 
         const cooldown = 24 * 60 * 60 * 1000; // 24 hours
         const now = Date.now();

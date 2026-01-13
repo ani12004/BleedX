@@ -8,7 +8,7 @@ export default {
     aliases: ["p", "userinfo"],
     async execute(message, args, client) {
         const target = message.mentions.users.first() || message.author;
-        const user = getEconomy(target.id);
+        const user = await getEconomy(target.id);
 
         let partnerName = "None";
         if (user.partner_id) {

@@ -5,7 +5,7 @@ export default {
     name: "divorce",
     description: "Divorce your partner.",
     async execute(message, args) {
-        const user = getEconomy(message.author.id);
+        const user = await getEconomy(message.author.id);
 
         if (!user.partner_id) return message.reply("You are not married!");
 

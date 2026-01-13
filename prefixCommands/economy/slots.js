@@ -15,7 +15,7 @@ export default {
             return message.reply("Usage: `s?slots <bet>`");
         }
 
-        const user = getEconomy(message.author.id);
+        const user = await getEconomy(message.author.id);
         if (user.balance < amount) {
             return message.reply(`${emojis.ERROR} You don't have enough money.`);
         }

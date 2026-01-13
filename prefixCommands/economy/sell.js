@@ -51,7 +51,7 @@ export default {
             removeItem(message.author.id, animal.id, item.count);
         }
 
-        const user = getEconomy(message.author.id);
+        const user = await getEconomy(message.author.id);
         updateEconomy(message.author.id, { balance: user.balance + totalEarned });
 
         const embed = new EmbedBuilder()

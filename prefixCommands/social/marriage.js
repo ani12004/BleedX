@@ -13,7 +13,7 @@ export default {
         const aliasUsed = message.content.split(" ")[0].replace(/[^a-zA-Z]/g, "");
 
         if (aliasUsed === "divorce") {
-            const userEco = getEconomy(message.author.id);
+            const userEco = await getEconomy(message.author.id);
             if (!userEco.partner_id) return message.reply(`${emojis.ERROR} You are not married!`);
 
             const partnerId = userEco.partner_id;
@@ -27,8 +27,8 @@ export default {
         if (!target) return message.reply(`${emojis.ERROR} Mention someone to marry.`);
         if (target.id === message.author.id) return message.reply(`${emojis.ERROR} You cannot marry yourself.`);
 
-        const userEco = getEconomy(message.author.id);
-        const targetEco = getEconomy(target.id);
+        const userEco = await getEconomy(message.author.id);
+        const targetEco = await getEconomy(target.id);
 
         if (userEco.partner_id) return message.reply(`${emojis.ERROR} You are already married!`);
         if (targetEco.partner_id) return message.reply(`${emojis.ERROR} They are already married!`);

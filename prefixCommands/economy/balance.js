@@ -11,7 +11,7 @@ export default {
         if (!await checkRules(message, message.author.id)) return;
 
         const target = message.mentions.users.first() || message.author;
-        const user = getEconomy(target.id);
+        const user = await getEconomy(target.id);
 
         const embed = new EmbedBuilder()
             .setColor("Gold")

@@ -11,8 +11,8 @@ export default {
         if (target.id === message.author.id) return message.reply("You can't adopt yourself!");
         if (target.bot) return message.reply("You can't adopt a bot!");
 
-        const parent = getEconomy(message.author.id);
-        const child = getEconomy(target.id);
+        const parent = await getEconomy(message.author.id);
+        const child = await getEconomy(target.id);
 
         if (child.parent_id) return message.reply("This user already has a parent!");
 
