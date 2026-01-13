@@ -12,7 +12,11 @@ export default {
         if (!newPrefix) return message.reply("❌ Please provide a new prefix.");
         if (newPrefix.length > 5) return message.reply("❌ Prefix cannot be longer than 5 characters.");
 
-        setGuildConfig(message.guild.id, "prefix", newPrefix);
-        message.reply(`✅ Prefix updated to \`${newPrefix}\``);
+        const success = await setGuildConfig(message.guild.id, "prefix", newPrefix);
+        if (success) {
+            message.reply(`✅ Prefix updated to \`${newPrefix}\``);
+        } else {
+            message.reply("❌ Failed to update prefix in database.");
+        }
     },
 };
