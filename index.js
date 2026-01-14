@@ -73,18 +73,24 @@ client.on('warn', (message) => {
   logger.warn(`[Client Warn] ${message}`);
 });
 
+let isInitialized = false;
+
 async function startBot() {
   try {
     logger.info('Starting bot...');
 
-    // Load events
-    await loadEvents(client);
+    if (!isInitialized) {
+      // Load events
+      await loadEvents(client);
 
-    // Load prefix commands
-    await loadPrefixCommands(client);
+      // Load prefix commands
+      await loadPrefixCommands(client);
 
-    // Load slash commands
-    await loadSlashCommands(client);
+      // Load slash commands
+      await loadSlashCommands(client);
+
+      isInitialized = true;
+    }
 
     // Basic DB Check
     const { error } = await db.from('guild_configs').select('guild_id').limit(1);
@@ -116,7 +122,6 @@ async function startBot() {
 }
 
 
-// ADDED: API Endpoint for Bot Stats
 // ADDED: API Endpoint for Bot Stats
 client.once('ready', () => {
   // Security: Restrict CORS to specific frontend domains

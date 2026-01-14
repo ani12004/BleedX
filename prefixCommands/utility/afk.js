@@ -1,5 +1,5 @@
 import { EmbedBuilder } from "discord.js";
-import db, { updateUser } from "../../utils/database.js";
+import db, { updateUser, addAFK } from "../../utils/database.js";
 import emojis from "../../utils/emojis.js";
 
 export default {
@@ -18,16 +18,7 @@ export default {
 
         try {
             // Upsert AFK status
-            const { error } = await db
-                .from('afk')
-                .upsert({
-                    user_id: userId,
-                    guild_id: guildId,
-                    reason: reason,
-                    timestamp: Date.now()
-                }, { onConflict: 'user_id' });
-
-            if (error) throw error;
+            await addAFK(userId, guildId, reason);
 
             const embed = new EmbedBuilder()
                 .setColor("#6EE7B7") // Mint (Success)

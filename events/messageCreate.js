@@ -1,5 +1,5 @@
 import { Events, ChannelType, PermissionsBitField, EmbedBuilder } from 'discord.js';
-import db, { getGuildConfig, updateUser, getUser } from '../utils/database.js';
+import db, { getGuildConfig, updateUser, getUser, getAFK, removeAFK } from '../utils/database.js';
 import { checkRules } from '../utils/checkRules.js';
 import moment from 'moment';
 
@@ -52,9 +52,10 @@ export default {
 
             // --- AFK SYSTEM ---
             // 1. Check if Author is AFK -> Remove AFK
-            const { data: authorAFK } = await db.from('afk').select('*').eq('user_id', userId).single();
+            // 1. Check if Author is AFK -> Remove AFK
+            const authorAFK = await getAFK(userId);
             if (authorAFK) {
-                await db.from('afk').delete().eq('user_id', userId);
+                await removeAFK(userId);
                 const duration = moment.duration(Date.now() - authorAFK.timestamp).humanize();
                 message.channel.send(`👋 Welcome back **${message.author.username}**! You were AFK for ${duration}.`);
 
@@ -73,7 +74,9 @@ export default {
                 for (const [mentionedId, mentionedUser] of message.mentions.users) {
                     if (mentionedId === userId || mentionedUser.bot) continue;
 
-                    const { data: targetAFK } = await db.from('afk').select('*').eq('user_id', mentionedId).single();
+                    if (mentionedId === userId || mentionedUser.bot) continue;
+
+                    const targetAFK = await getAFK(mentionedId);
                     if (targetAFK) {
                         const duration = moment.duration(Date.now() - targetAFK.timestamp).humanize();
                         const embed = new EmbedBuilder()

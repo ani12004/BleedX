@@ -17,6 +17,7 @@ export default supabase; // Export client as default
 // Helper functions matching the previous API (but ASYNC)
 const guildConfigCache = new Map();
 const economyCache = new Map(); // Global Economy Cache
+const afkCache = new Map(); // AFK Cache
 const CACHE_TTL = 10 * 60 * 1000; // 10 minutes
 
 export const getGuildConfig = async (guildId) => {
@@ -325,4 +326,43 @@ export const getReactionRole = async (messageId, emoji) => {
     .match({ message_id: messageId, emoji: emoji })
     .single();
   return data || null;
+};
+
+// AFK System (Cached)
+export const getAFK = async (userId) => {
+  if (afkCache.has(userId)) {
+    return afkCache.get(userId);
+  }
+
+  const { data } = await supabase
+    .from('afk')
+    .select('*')
+    .eq('user_id', userId)
+    .single();
+
+  if (data) {
+    afkCache.set(userId, data);
+  }
+  return data || null;
+};
+
+export const addAFK = async (userId, guildId, reason) => {
+  const afkData = { user_id: userId, guild_id: guildId, reason, timestamp: Date.now() };
+
+  // Update Cache
+  afkCache.set(userId, afkData);
+
+  await supabase
+    .from('afk')
+    .upsert(afkData, { onConflict: 'user_id' });
+};
+
+export const removeAFK = async (userId) => {
+  // Update Cache
+  afkCache.delete(userId);
+
+  await supabase
+    .from('afk')
+    .delete()
+    .eq('user_id', userId);
 };
