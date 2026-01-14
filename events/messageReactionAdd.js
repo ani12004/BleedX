@@ -25,30 +25,45 @@ export default {
 
         // --- STARBOARD ---
         if (config.starboard_enabled) {
-            const sbEmoji = config.starboard_emoji || "⭐";
-            if (reaction.emoji.name === sbEmoji) {
+            // Helper to extract ID from "<:name:id>" or use raw unicode
+            const defaultStar = "⭐"; // Fallback
+            // But we want to use the Custom Emoji from utils if possible?
+            // The config usually stores the string. 
+            // If config is null, use logic to compare vs emojis.STAR
+
+            // For checking reaction equality:
+            // Custom emojis: reaction.emoji.id
+            // Unicode emojis: reaction.emoji.name
+
+            const targetEmojiStr = config.starboard_emoji || "⭐";
+            let isMatch = false;
+
+            if (targetEmojiStr.startsWith("<:")) {
+                const targetId = targetEmojiStr.split(":")[2].replace(">", "");
+                if (reaction.emoji.id === targetId) isMatch = true;
+            } else {
+                if (reaction.emoji.name === targetEmojiStr) isMatch = true;
+            }
+
+            if (isMatch) {
                 const threshold = config.starboard_threshold || 3;
                 if (reaction.count >= threshold) {
                     const sbChannelId = config.starboard_channel;
                     if (sbChannelId) {
                         const sbChannel = message.guild.channels.cache.get(sbChannelId);
                         if (sbChannel) {
-                            // Check if already posted? (Requires DB tracking to avoid dupes)
-                            // For now, we just post (simple implementation)
                             const embed = new EmbedBuilder()
                                 .setAuthor({ name: message.author.tag, iconURL: message.author.displayAvatarURL() })
                                 .setDescription(message.content || "Image/Attachment")
                                 .setColor(config.starboard_color || "#FFD700")
                                 .addFields({ name: "Source", value: `[Jump](${message.url})` })
-                                .setFooter({ text: `${reaction.count} ${sbEmoji}` })
+                                .setFooter({ text: `${reaction.count} | ${message.id}` }) // Simplify footer
                                 .setTimestamp();
 
                             if (message.attachments.first()) {
                                 embed.setImage(message.attachments.first().url);
                             }
-
-                            // A real implementation would check DB if message.id is already on starboard
-                            sbChannel.send({ content: `🌟 **${reaction.count}** | <#${message.channel.id}>`, embeds: [embed] });
+                            sbChannel.send({ content: `${targetEmojiStr} **${reaction.count}** | <#${message.channel.id}>`, embeds: [embed] });
                         }
                     }
                 }
@@ -57,8 +72,17 @@ export default {
 
         // --- CLOWNBOARD ---
         if (config.clownboard_enabled) {
-            const cbEmoji = config.clownboard_emoji || "🤡";
-            if (reaction.emoji.name === cbEmoji) {
+            const targetEmojiStr = config.clownboard_emoji || "🤡";
+            let isMatch = false;
+
+            if (targetEmojiStr.startsWith("<:")) {
+                const targetId = targetEmojiStr.split(":")[2].replace(">", "");
+                if (reaction.emoji.id === targetId) isMatch = true;
+            } else {
+                if (reaction.emoji.name === targetEmojiStr) isMatch = true;
+            }
+
+            if (isMatch) {
                 const threshold = config.clownboard_threshold || 3;
                 if (reaction.count >= threshold) {
                     const cbChannelId = config.clownboard_channel;
@@ -68,15 +92,15 @@ export default {
                             const embed = new EmbedBuilder()
                                 .setAuthor({ name: message.author.tag, iconURL: message.author.displayAvatarURL() })
                                 .setDescription(message.content || "Image/Attachment")
-                                .setColor(config.clownboard_color || "#FF0000") // Red for clown
+                                .setColor(config.clownboard_color || "#FF0000")
                                 .addFields({ name: "Source", value: `[Jump](${message.url})` })
-                                .setFooter({ text: `${reaction.count} ${cbEmoji}` })
+                                .setFooter({ text: `${reaction.count} | ${message.id}` })
                                 .setTimestamp();
 
                             if (message.attachments.first()) {
                                 embed.setImage(message.attachments.first().url);
                             }
-                            cbChannel.send({ content: `🤡 **${reaction.count}** | <#${message.channel.id}>`, embeds: [embed] });
+                            cbChannel.send({ content: `${targetEmojiStr} **${reaction.count}** | <#${message.channel.id}>`, embeds: [embed] });
                         }
                     }
                 }
