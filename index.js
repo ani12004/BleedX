@@ -48,10 +48,8 @@ import { YtDlpPlugin } from '@distube/yt-dlp';
 
 // Init DisTube
 client.distube = new DisTube(client, {
-  leaveOnStop: false,
-  emitNewSongOnly: true,
-  emitAddSongWhenCreatingQueue: false,
-  emitAddListWhenCreatingQueue: false,
+  leaveOnEmpty: true,
+  emptyCooldown: 0,
   plugins: [
     new SpotifyPlugin(),
     new SoundCloudPlugin(),
