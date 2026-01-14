@@ -19,8 +19,8 @@
   "license": "UNLICENSED",
   "dependencies": {
     "@discordjs/voice": "^0.19.0",
-    "@distube/soundcloud": "^2.0.3",
-    "@distube/spotify": "^2.0.4",
+    "@distube/soundcloud": "^2.0.4",
+    "@distube/spotify": "^2.0.2",
     "@distube/yt-dlp": "^2.0.1",
     "@supabase/supabase-js": "^2.90.1",
     "better-sqlite3": "^12.5.0",
