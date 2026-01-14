@@ -61,7 +61,7 @@ export default {
     VM_HIDE: "👻",   // Fallback
     VM_SHOW: "👁️",   // Fallback
     VM_CLAIM: "👑",  // Fallback
-    VM_KICK: "👢",   // Fallback
+    VM_KICK: "<:28454pepe:1460665910770798767>",   // Using same emoji as KICK
     VM_INFO: "ℹ️",   // Fallback
 
     // Leveling
