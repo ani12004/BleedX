@@ -44,36 +44,36 @@ export default {
           if (action === "lock") {
                if (!isOwner) return message.reply("Not owner.");
                await voiceChannel.permissionOverwrites.edit(message.guild.roles.everyone, { Connect: false });
-               return message.reply("Locked.");
+               return message.reply(`${emojis.VM_LOCK} Locked.`);
           }
           if (action === "unlock") {
                if (!isOwner) return message.reply("Not owner.");
                await voiceChannel.permissionOverwrites.edit(message.guild.roles.everyone, { Connect: true });
-               return message.reply("Unlocked.");
+               return message.reply(`${emojis.VM_UNLOCK} Unlocked.`);
           }
           if (action === "ghost") {
                if (!isOwner) return message.reply("Not owner.");
                await voiceChannel.permissionOverwrites.edit(message.guild.roles.everyone, { ViewChannel: false });
-               return message.reply("Ghosted (Hidden).");
+               return message.reply(`${emojis.VM_HIDE} Ghosted (Hidden).`);
           }
           if (action === "unghost") {
                if (!isOwner) return message.reply("Not owner.");
                await voiceChannel.permissionOverwrites.edit(message.guild.roles.everyone, { ViewChannel: true });
-               return message.reply("Unghosted (Visible).");
+               return message.reply(`${emojis.VM_SHOW} Unghosted (Visible).`);
           }
           if (action === "name") {
                if (!isOwner) return message.reply("Not owner.");
                const name = args.slice(1).join(" ");
                if (!name) return message.reply("Usage: ,vm name [new name]");
                await voiceChannel.setName(name);
-               return message.reply(`Renamed to ${name}`);
+               return message.reply(`${emojis.SUCCESS} Renamed to ${name}`);
           }
           if (action === "limit") {
                if (!isOwner) return message.reply("Not owner.");
                const limit = parseInt(args[1]);
                if (isNaN(limit)) return message.reply("Usage: ,vm limit [number]");
                await voiceChannel.setUserLimit(limit);
-               return message.reply(`Limit set to ${limit}`);
+               return message.reply(`${emojis.SUCCESS} Limit set to ${limit}`);
           }
           if (action === "clean" || action === "claim") {
                // Claim logic from before
@@ -81,7 +81,7 @@ export default {
                if (ownerOverwrite && voiceChannel.members.has(ownerOverwrite.id)) return message.reply("Owner is here.");
                // Steal
                await voiceChannel.permissionOverwrites.edit(message.member, { ManageChannels: true, Connect: true });
-               return message.reply("Claimed.");
+               return message.reply(`${emojis.VM_CLAIM} Claimed.`);
           }
 
           // Default fallthrough
@@ -90,7 +90,7 @@ export default {
                const target = message.mentions.members.first();
                if (!target) return message.reply("Usage: ,vm permit @user");
                await voiceChannel.permissionOverwrites.edit(target, { Connect: true, ViewChannel: true });
-               return message.reply(`Permitted ${target.user.username}.`);
+               return message.reply(`${emojis.SUCCESS} Permitted ${target.user.username}.`);
           }
           if (action === "reject") {
                if (!isOwner) return message.reply("Not owner.");
@@ -98,7 +98,7 @@ export default {
                if (!target) return message.reply("Usage: ,vm reject @user");
                await voiceChannel.permissionOverwrites.edit(target, { Connect: false });
                if (target.voice.channelId === voiceChannel.id) target.voice.disconnect();
-               return message.reply(`Rejected ${target.user.username}.`);
+               return message.reply(`${emojis.VM_KICK} Rejected ${target.user.username}.`);
           }
           if (action === "bitrate") {
                if (!isOwner) return message.reply("Not owner.");
