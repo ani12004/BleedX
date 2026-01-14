@@ -44,5 +44,22 @@ export default {
                 }
             }
         }
+        // ... existing logic ...
+
+        // --- LOGGING ---
+        if (config.mod_log_channel) {
+            const logChannel = guild.channels.cache.get(config.mod_log_channel);
+            if (logChannel) {
+                if (!oldState.channelId && newState.channelId) {
+                    logChannel.send(`🎙️ **${newState.member.user.tag}** joined voice channel **${newState.channel.name}**`).catch(() => { });
+                }
+                if (oldState.channelId && !newState.channelId) {
+                    logChannel.send(`🎙️ **${oldState.member.user.tag}** left voice channel **${oldState.channel.name}**`).catch(() => { });
+                }
+                if (oldState.channelId && newState.channelId && oldState.channelId !== newState.channelId) {
+                    logChannel.send(`🎙️ **${newState.member.user.tag}** moved to **${newState.channel.name}**`).catch(() => { });
+                }
+            }
+        }
     },
 };
