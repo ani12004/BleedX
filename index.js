@@ -42,16 +42,12 @@ const client = new Client({
 
 // Import DisTube
 import { DisTube } from 'distube';
-import { SpotifyPlugin } from '@distube/spotify';
 import { SoundCloudPlugin } from '@distube/soundcloud';
 import { YtDlpPlugin } from '@distube/yt-dlp';
 
 // Init DisTube
 client.distube = new DisTube(client, {
-  leaveOnEmpty: true,
-  emptyCooldown: 0,
   plugins: [
-    new SpotifyPlugin(),
     new SoundCloudPlugin(),
     new YtDlpPlugin()
   ]
