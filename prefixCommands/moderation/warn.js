@@ -16,7 +16,7 @@ export default {
         if (target.id === message.author.id) return message.reply(`${emojis.ERROR} You cannot warn yourself.`);
         if (target.roles.highest.position >= message.member.roles.highest.position) return message.reply(`${emojis.ERROR} You cannot warn this user.`);
 
-        addWarning(message.guild.id, target.id, reason);
+        await addWarning(message.guild.id, target.id, reason);
 
         const embed = new EmbedBuilder()
             .setColor("#FFD700")

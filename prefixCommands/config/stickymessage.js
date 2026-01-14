@@ -1,61 +1,49 @@
-import { PermissionsBitField } from "discord.js";
-import emojis from "../../utils/emojis.js";
 
-// Mock DB
-const stickyMessages = new Map(); // ChannelID -> Content
+import { PermissionsBitField, EmbedBuilder } from "discord.js";
+import db from "../../utils/database.js";
+import emojis from "../../utils/emojis.js";
 
 export default {
     name: "stickymessage",
-    description: "Manage sticky messages.",
+    description: "Set up sticky messages",
     permissions: [PermissionsBitField.Flags.ManageMessages],
     aliases: ["sticky", "sm"],
     async execute(message, args) {
-        const action = args[0]?.toLowerCase();
+        const subcommand = args[0]?.toLowerCase();
+        const guildId = message.guild.id;
+        const channelId = message.channel.id;
 
-        if (!action) return message.reply("Usage: ,stickymessage [add/remove/list/view]");
+        if (!subcommand) return message.reply("Usage: ,sticky [add/remove/list/view]");
 
-        switch (action) {
-            case "add":
-                // Usage: ,sticky add #channel message
-                const channel = message.mentions.channels.first() || message.channel;
-                const content = args.slice(2).join(" "); // Assuming #channel is mentioned
-                // If no channel mention, maybe args[1] is start of content?
-                // Let's assume strict usage for now or check args
+        if (subcommand === "add") {
+            const content = args.slice(1).join(" ");
+            if (!content) return message.reply("Usage: ,sticky add [message]");
 
-                if (!content && !message.mentions.channels.first()) {
-                    // Maybe usage is ,sticky add message (for current channel)
-                    const localContent = args.slice(1).join(" ");
-                    if (localContent) {
-                        stickyMessages.set(message.channel.id, localContent);
-                        return message.reply(`✅ Sticky message added to this channel.`);
-                    }
-                }
-
-                if (content) {
-                    stickyMessages.set(channel.id, content);
-                    return message.reply(`✅ Sticky message set for ${channel}.`);
-                }
-                return message.reply("Usage: ,stickymessage add #channel [message] OR ,stickymessage add [message]");
-
-            case "remove":
-                const targetCh = message.mentions.channels.first() || message.channel;
-                if (stickyMessages.has(targetCh.id)) {
-                    stickyMessages.delete(targetCh.id);
-                    return message.reply(`✅ Sticky message removed from ${targetCh}.`);
-                }
-                return message.reply("❌ No sticky message in that channel.");
-
-            case "list":
-                return message.reply(`📝 **Sticky Messages**: ${stickyMessages.size}`);
-
-            case "view":
-                const viewCh = message.mentions.channels.first() || message.channel;
-                const msg = stickyMessages.get(viewCh.id);
-                if (msg) return message.reply(`Sticky message in ${viewCh}: \n> ${msg}`);
-                return message.reply("No sticky message set.");
-
-            default:
-                return message.reply("Unknown subcommand.");
+            const { error } = await db.from('sticky_messages').upsert({ 
+                channel_id: channelId, 
+                guild_id: guildId, 
+                message: content 
+            });
+            
+            if (error) return message.reply(`${emojis.ERROR} Failed: ${error.message}`);
+            return message.reply(`${emojis.SUCCESS} Sticky message set for this channel.`);
         }
+
+        if (subcommand === "remove") {
+            const { error } = await db.from('sticky_messages').delete().eq('channel_id', channelId);
+             if (error) return message.reply(`${emojis.ERROR} Error: ${error.message}`);
+             return message.reply(`${emojis.SUCCESS} Sticky message removed.`);
+        }
+
+        if (subcommand === "list") {
+             const { data } = await db.from('sticky_messages').select('*').eq('guild_id', guildId);
+             if (!data || data.length === 0) return message.reply("No sticky messages.");
+             
+             const list = data.map(s => `<#${s.channel_id}>: ${s.message.substring(0,30)}...`).join("\n");
+             const embed = new EmbedBuilder().setTitle("Sticky Messages").setDescription(list).setColor("#2b2d31");
+             return message.reply({ embeds: [embed] });
+        }
+
+        return message.reply("Usage: ,sticky [add/remove/list]");
     }
 };

@@ -17,7 +17,7 @@ export default {
 
             message.reply({ embeds: [embed] });
         } catch (error) {
-            console.error(error);
+            console.error("Fact command error:", error);
             message.reply("Couldn't fetch a fact right now. Try again later!");
         }
     },

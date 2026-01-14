@@ -40,6 +40,27 @@ const client = new Client({
   partials: [Partials.Channel],
 });
 
+// Import DisTube
+import { DisTube } from 'distube';
+import { SpotifyPlugin } from '@distube/spotify';
+import { SoundCloudPlugin } from '@distube/soundcloud';
+import { YtDlpPlugin } from '@distube/yt-dlp';
+
+// Init DisTube
+client.distube = new DisTube(client, {
+  leaveOnStop: false,
+  emitNewSongOnly: true,
+  emitAddSongWhenCreatingQueue: false,
+  emitAddListWhenCreatingQueue: false,
+  plugins: [
+    new SpotifyPlugin({
+      emitEventsAfterFetching: true
+    }),
+    new SoundCloudPlugin(),
+    new YtDlpPlugin()
+  ]
+});
+
 // Collections
 client.prefixCommands = new Collection();
 client.db = db; // Attach DB to client

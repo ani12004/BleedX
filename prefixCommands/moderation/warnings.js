@@ -11,11 +11,11 @@ export default {
 
         if (args[1] === "clear") {
             if (!message.member.permissions.has(PermissionsBitField.Flags.Administrator)) return message.reply("❌ You need Administrator permission to clear warnings.");
-            clearWarnings(message.guild.id, target.id);
+            await clearWarnings(message.guild.id, target.id);
             return message.reply(`✅ Cleared all warnings for **${target.user.tag}**.`);
         }
 
-        const warnings = getWarnings(message.guild.id, target.id);
+        const warnings = await getWarnings(message.guild.id, target.id);
 
         if (warnings.length === 0) {
             return message.reply(`✅ **${target.user.tag}** has no warnings.`);
