@@ -2,50 +2,48 @@ import { DisTubeError, PlayableExtractorPlugin, Playlist, Song } from "distube";
 import dargs from "dargs";
 import { spawn } from "child_process";
 import path from "path";
-import { fileURLToPath } from "url";
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+import fs from "fs";
 
 const isPlaylist = (i) => Array.isArray(i.entries);
 
 export class YtDlpPlugin extends PlayableExtractorPlugin {
-    constructor({ update = true, cookies } = {}) {
+    constructor({ update = true, cookies, userAgent } = {}) {
         super();
         this.cookies = cookies;
-        if (update) {
-            // We rely on the update logic from the base binary or just assume it's there/managed manually
-            // For simplicity in this custom handler, we skip auto-download/update logic 
-            // and assume yt-dlp is available in the path or node_modules
-        }
+        this.userAgent = userAgent || "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36";
     }
 
     validate() {
         return true;
     }
 
-    // Helper to run yt-dlp
-    async json(url, flags, options) {
-        // Find yt-dlp executable
-        // Trying to locate the one installed by @distube/yt-dlp or system
-        let ytDlpPath = "yt-dlp";
+    async getBinaryPath() {
+        // Try to find the binary from the installed @distube/yt-dlp package
         try {
-            // Try to find the binary from the installed package
-            const ytDlpPackage = await import("@distube/yt-dlp");
-            // This is hacky because the package entry point might not expose the path directly in a clean way
-            // So we will assume a standard path in node_modules if possible, or fallback to 'yt-dlp'
-            ytDlpPath = path.resolve("node_modules/@distube/yt-dlp/bin/yt-dlp");
-            if (process.platform === "win32") ytDlpPath += ".exe";
+            // 1. Try resolving via node_modules relative to CWD
+            let potentialPath = path.resolve("node_modules/@distube/yt-dlp/bin/yt-dlp");
+            if (process.platform === "win32") potentialPath += ".exe";
+            if (fs.existsSync(potentialPath)) return potentialPath;
+
+            // 2. Try looking in the package directory if we are in a monorepo or weird structure
+            //    (Skipping complex resolution for now, fallback to "yt-dlp" in PATH)
         } catch (e) {
-            // Fallback
+            // Ignore
         }
+        return "yt-dlp"; // Fallback to system PATH
+    }
 
+    async json(url, flags, options) {
+        const ytDlpPath = await this.getBinaryPath();
+
+        // Ensure cookies path is absolute if provided
         if (this.cookies) {
-            flags.cookies = this.cookies;
+            flags.cookies = path.resolve(this.cookies);
         }
 
-        // ADDED: User Agent to bypass simple bot checks
-        flags.userAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36";
+        if (this.userAgent) {
+            flags.userAgent = this.userAgent;
+        }
 
         const args = [url, ...dargs(flags, { useEquals: false })].filter(Boolean);
 
@@ -62,6 +60,8 @@ export class YtDlpPlugin extends PlayableExtractorPlugin {
                     try {
                         resolve(JSON.parse(output));
                     } catch (e) {
+                        // Sometimes yt-dlp outputs warnings before JSON, try to find the JSON blob
+                        // But dump-single-json usually handles this.
                         reject(new Error(`Invalid JSON output: ${output}`));
                     }
                 } else {
@@ -76,11 +76,12 @@ export class YtDlpPlugin extends PlayableExtractorPlugin {
         const info = await this.json(url, {
             dumpSingleJson: true,
             noWarnings: true,
-            // noCallHome: true, // REMOVED DEPRECATED FLAG
+            // noCallHome: true, // REMOVED: Deprecated
             preferFreeFormats: true,
             skipDownload: true,
             simulate: true,
-            defaultSearch: 'auto' // Handle search strings too
+            defaultSearch: 'auto',
+            flatPlaylist: true // Optimization for playlists
         }).catch((e) => {
             throw new DisTubeError("YTDLP_ERROR", `${e.stderr || e}`);
         });
@@ -109,11 +110,10 @@ export class YtDlpPlugin extends PlayableExtractorPlugin {
         const info = await this.json(song.url, {
             dumpSingleJson: true,
             noWarnings: true,
-            // noCallHome: true, // REMOVED DEPRECATED FLAG
-            // preferFreeFormats: true, // REMOVED: Often causes incomplete playback with opus/webm
+            // noCallHome: true, // REMOVED
             skipDownload: true,
             simulate: true,
-            format: "bestaudio/best" // Changed from ba/ba* to potentially more stable format
+            format: "bestaudio/best" // Simplified format selection
         }).catch((e) => {
             throw new DisTubeError("YTDLP_ERROR", `${e.stderr || e}`);
         });
@@ -122,9 +122,7 @@ export class YtDlpPlugin extends PlayableExtractorPlugin {
         return info.url;
     }
 
-    getRelatedSongs() {
-        return [];
-    }
+    getRelatedSongs() { return []; }
 }
 
 class YtDlpSong extends Song {

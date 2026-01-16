@@ -49,8 +49,8 @@ const client = new Client({
 // Import DisTube
 import { DisTube } from 'distube';
 import { SoundCloudPlugin } from '@distube/soundcloud';
-import { YtDlpPlugin } from '@distube/yt-dlp'; // Re-enabled official plugin
-// import { YtDlpPlugin } from './handlers/YtDlpPlugin.js'; // REMOVED custom handler
+// import { YtDlpPlugin } from '@distube/yt-dlp'; // Re-enabled official plugin
+import { YtDlpPlugin } from './handlers/YtDlpPlugin.js'; // REMOVED custom handler
 import { SpotifyPlugin } from '@distube/spotify';
 import ffmpeg from 'ffmpeg-static'; // ADDED: Explicit ffmpeg path
 
