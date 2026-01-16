@@ -23,6 +23,9 @@ export default {
             message.react('🔎');
         } catch (e) {
             console.error(e);
+            if (e.errorCode === 'VOICE_CONNECT_FAILED') {
+                return message.reply(`${emojis.ERROR} | **Voice Connection Failed**\nVoice connections are not supported on this host (Render). Please use a VPS or local hosting.`);
+            }
             message.reply(`${emojis.ERROR} An error occurred: \`${e.message}\``);
         }
     }

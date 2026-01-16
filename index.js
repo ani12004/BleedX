@@ -198,6 +198,11 @@ async function startBot() {
 
 // ADDED: API Endpoint for Bot Stats
 client.once('ready', () => {
+  // HOSTING WARNING: Render does not support UDP (Voice)
+  if (process.env.RENDER || process.env.IS_RENDER) {
+    logger.warn("WARNING: This bot is running on Render. Voice connections (music) will likely fail due to UDP blocking. Please use a VPS for music features.");
+  }
+
   // Security: Restrict CORS to specific frontend domains
   const allowedOrigins = ['https://imperiumbot.netlify.app', 'http://localhost:3000', 'https://imperiumgg.netlify.app'];
 
