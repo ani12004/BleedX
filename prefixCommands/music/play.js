@@ -23,7 +23,7 @@ export default {
             message.react('🔎');
         } catch (e) {
             console.error(e);
-            message.reply(`${emojis.ERROR} An error occurred.`);
+            message.reply(`${emojis.ERROR} An error occurred: \`${e.message}\``);
         }
     }
 };

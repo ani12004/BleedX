@@ -77,7 +77,18 @@ client.distube = new DisTube(client, {
   ],
   emitNewSongOnly: true,
 
-  savePreviousSongs: true
+  emitNewSongOnly: true,
+
+  savePreviousSongs: true,
+  ffmpeg: {
+    args: {
+      global: {
+        'reconnect': '1',
+        'reconnect_streamed': '1',
+        'reconnect_delay_max': '5'
+      }
+    }
+  }
 });
 
 // Load DisTube Events
