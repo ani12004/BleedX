@@ -52,6 +52,7 @@ import { SoundCloudPlugin } from '@distube/soundcloud';
 // import { YtDlpPlugin } from '@distube/yt-dlp'; // Replaced by custom handler
 import { YtDlpPlugin } from './handlers/YtDlpPlugin.js';
 import { SpotifyPlugin } from '@distube/spotify';
+import ffmpeg from 'ffmpeg-static'; // ADDED: Explicit ffmpeg path
 
 // Check for cookies file (optional, for YouTube Sign-in fix)
 import fs from 'fs';
@@ -91,6 +92,7 @@ client.distube = new DisTube(client, {
 
   savePreviousSongs: true,
   ffmpeg: {
+    path: ffmpeg, // ADDED: Explicit path
     args: {
       global: {
         'reconnect': '1',
