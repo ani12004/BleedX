@@ -60,9 +60,7 @@ client.distube = new DisTube(client, {
     new SpotifyPlugin()
   ],
   emitNewSongOnly: true,
-  leaveOnEmpty: true,
-  leaveOnFinish: true,
-  leaveOnStop: true,
+
   savePreviousSongs: true
 });
 
