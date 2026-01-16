@@ -127,3 +127,4 @@ fi
 echo -e "\n${GREEN}=== Setup Complete! ===${NC}"
 echo -e "Your bot should now be running. Check status with: ${YELLOW}pm2 status${NC}"
 echo -e "View logs with: ${YELLOW}pm2 logs imperium${NC}"
+
