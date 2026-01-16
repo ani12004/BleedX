@@ -49,14 +49,20 @@ const client = new Client({
 // Import DisTube
 import { DisTube } from 'distube';
 import { SoundCloudPlugin } from '@distube/soundcloud';
-import { YtDlpPlugin } from '@distube/yt-dlp';
+// import { YtDlpPlugin } from '@distube/yt-dlp'; // Replaced by custom handler
+import { YtDlpPlugin } from './handlers/YtDlpPlugin.js';
 import { SpotifyPlugin } from '@distube/spotify';
+
+// Check for cookies file (optional, for YouTube Sign-in fix)
+import fs from 'fs';
+const cookiesPath = './cookies.txt';
+const cookies = fs.existsSync(cookiesPath) ? cookiesPath : undefined;
 
 // Init DisTube
 client.distube = new DisTube(client, {
   plugins: [
     new SoundCloudPlugin(),
-    new YtDlpPlugin(),
+    new YtDlpPlugin({ cookies }),
     new SpotifyPlugin()
   ],
   emitNewSongOnly: true,
